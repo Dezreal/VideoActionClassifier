@@ -4,7 +4,7 @@ from GCN.layers import GraphConvolution
 
 
 class GCN(nn.Module):
-    def __init__(self, ninput, nhidden, noutput, dropout):
+    def __init__(self, ninput, nhidden, noutput, dropout, frames_per_video):
         super(GCN, self).__init__()
 
         self.gc1 = GraphConvolution(ninput, nhidden)
@@ -13,7 +13,7 @@ class GCN(nn.Module):
 
         self.fc = nn.Sequential(
             nn.Dropout(),
-            nn.Linear(2500, 100),
+            nn.Linear(25 * noutput * frames_per_video, 100),
             nn.ReLU(),
             nn.Dropout(),
             nn.Linear(100, 9)

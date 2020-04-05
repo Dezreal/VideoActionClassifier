@@ -14,6 +14,13 @@ def normalize(mx):
     return mx
 
 
+def normalize_on_dim(arr, dim):
+    max = np.max(arr, axis=dim, keepdims=True)
+    min = np.min(arr, axis=dim, keepdims=True)
+    _range = max - min
+    return (arr - min) / _range
+
+
 def sparse_mx_to_torch_sparse_tensor(sparse_mx):
     """Convert a scipy sparse matrix to a torch sparse tensor."""
     sparse_mx = sparse_mx.tocoo().astype(np.float32)

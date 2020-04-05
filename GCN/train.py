@@ -4,8 +4,8 @@ from models import GCN
 from data.utils import build_st_body25_graph
 from data.dataloader import load_features
 
-frames_per_video = 10
-model = GCN(3, 16, 10, 0.5)
+frames_per_video = 3
+model = GCN(3, 16, 10, 0.5, frames_per_video)
 optimizer = torch.optim.Adam(model.parameters(),
                        lr=0.01, weight_decay=5e-4)
 
@@ -25,7 +25,6 @@ def train(epoch):
     for e in range(0, epoch):
         for i in range(0, train_points.shape[0]):
             input = train_points[i]
-            input = input.reshape((-1, input.shape[-1]))
             label = train_labels[i]
             output = model(input, adj).reshape((1, -1))
             loss = F.nll_loss(output, label)
@@ -38,7 +37,7 @@ def test():
     model.eval()
     r = 0
     for i in range(0, test_points.shape[0]):
-        pred = model(test_points[i].reshape((-1, test_points[i].shape[-1])), adj).argmax().item()
+        pred = model(test_points[i], adj).argmax().item()
         print(str(pred) + str(test_labels[i]))
         if int(pred) == int(test_labels[i].item()):
             r = r + 1

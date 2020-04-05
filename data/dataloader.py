@@ -3,6 +3,7 @@ import scipy.io as scio
 import h5py
 import numpy as np
 import cv2
+import utils
 
 
 def load_features(datasets, frames_per_video):
@@ -40,17 +41,24 @@ def load_features(datasets, frames_per_video):
     train_index = np.argwhere(labels[:, 1] != actor_test).reshape(-1)
     test_index = np.argwhere(labels[:, 1] == actor_test).reshape(-1)
     train_points = points[train_index]
-    test_points = points[test_index].copy()
+    test_points = points[test_index]
     train_labels = labels[train_index]
-    test_labels = labels[test_index].copy()
+    test_labels = labels[test_index]
 
     # shuffle train data
     shuffle = np.arange(train_points.shape[0])
     np.random.shuffle(shuffle)
-    train_points = train_points[shuffle].copy()
-    train_labels = train_labels[shuffle].copy()
+    train_points = train_points[shuffle]
+    train_labels = train_labels[shuffle]
 
-    return train_points, train_labels, test_points, test_labels
+    train_points = train_points.reshape((-1, 25*frames_per_video, 3))
+    test_points = test_points.reshape((-1, 25*frames_per_video, 3))
+
+    # normalize
+    train_points = utils.normalize_on_dim(train_points, 1)
+    test_points = utils.normalize_on_dim(test_points, 1)
+
+    return train_points.copy(), train_labels.copy(), test_points.copy(), test_labels.copy()
 
 
 # f = "../FLIC/examples.mat"
