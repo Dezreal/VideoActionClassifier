@@ -38,12 +38,11 @@ def test():
     r = 0
     for i in range(0, test_points.shape[0]):
         pred = model(test_points[i], adj).argmax().item()
-        print(str(pred) + str(test_labels[i]))
+        print(str(pred) + "<=>" + str(test_labels[i].item()))
         if int(pred) == int(test_labels[i].item()):
             r = r + 1
 
     print float(r) / test_points.shape[0]
-
 
 
 if __name__ == "__main__":
