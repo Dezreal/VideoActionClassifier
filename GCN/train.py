@@ -5,7 +5,7 @@ from data.utils import build_st_body25_graph
 from data.dataloader import load_features
 
 frames_per_video = 3
-model = GCN(3, 16, 10, 0.5, frames_per_video)
+model = GCN(3, 16, 100, 0.5, frames_per_video)
 optimizer = torch.optim.Adam(model.parameters(),
                        lr=0.01, weight_decay=5e-4)
 
