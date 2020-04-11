@@ -1,10 +1,20 @@
 # coding=utf-8
 import numpy as np
+import torch
 
 import utils
 
+# number of key points
+NUM_V = 25
+
 
 def load_features(datasets, frames_per_video):
+    """
+
+    :param datasets: file path
+    :param frames_per_video: T
+    :return: shape = [N, T, V, C]
+    """
     data = np.loadtxt(datasets)
 
     frames_0th = np.argwhere(data[:, -1] == 0)
@@ -31,7 +41,7 @@ def load_features(datasets, frames_per_video):
     data = data[index]
 
     # get data and labels
-    points = data[:, 3: -1].reshape((-1, frames_per_video, 25, 3)).copy()
+    points = data[:, 3: -1].reshape((-1, frames_per_video, NUM_V, 3)).copy()
     labels = data[:, :3].reshape((-1, frames_per_video, 3))[:, 0, :].copy()
 
     # split train and test data
@@ -49,20 +59,39 @@ def load_features(datasets, frames_per_video):
     train_points = train_points[shuffle]
     train_labels = train_labels[shuffle]
 
-    train_points = train_points.reshape((-1, 25*frames_per_video, 3))
-    test_points = test_points.reshape((-1, 25*frames_per_video, 3))
+    train_points = train_points.reshape((-1, NUM_V * frames_per_video, 3))
+    test_points = test_points.reshape((-1, NUM_V * frames_per_video, 3))
 
     # normalize
-    train_points = utils.normalize_on_dim(train_points, 1)
-    test_points = utils.normalize_on_dim(test_points, 1)
+    # train_points = utils.normalize_on_dim(train_points, 1)
+    # test_points = utils.normalize_on_dim(test_points, 1)
 
     return train_points.copy(), train_labels.copy(), test_points.copy(), test_labels.copy()
 
 
+def load_features_for_old(datasets, frames_per_video):
+    train_points, train_labels, test_points, test_labels = load_features(datasets, frames_per_video)
+    # normalize
+    train_points = utils.normalize_on_dim(train_points, 1)
+    test_points = utils.normalize_on_dim(test_points, 1)
+    return train_points.copy(), train_labels.copy(), test_points.copy(), test_labels.copy()
+
+
+def load_features_for_stgcn(datasets, frames_per_video):
+    train_points, train_labels, test_points, test_labels = load_features(datasets, frames_per_video)
+    train_points = torch.tensor(train_points, dtype=torch.float32)
+    N, TVM, C = train_points.shape
+    train_points = train_points.reshape((N, frames_per_video, NUM_V, C, 1))
+    train_points = train_points.permute(0, 3, 1, 2, 4)
+    test_points = torch.tensor(test_points, dtype=torch.float32)
+    N, TVM, C = test_points.shape
+    test_points = test_points.reshape((N, frames_per_video, NUM_V, C, 1))
+    test_points = test_points.permute(0, 3, 1, 2, 4)
+    return train_points.contiguous(), train_labels.copy(), test_points.contiguous(), test_labels.copy()
+
+
 # f = "../FLIC/examples.mat"
 # data = scio.loadmat(f)
-#
-# print(data)
 #
 # f = "/home/nya-chu/下载/features_cropped/depth_cropped_a02_s01_e01.mat"
 # mat = h5py.File(f,mode='r')
@@ -74,4 +103,4 @@ def load_features(datasets, frames_per_video):
 
 # data = np.loadtxt("/datasets/Florence_3d_actions/Florence_dataset_Features.txt")
 if __name__ == "__main__":
-    load_features("features.txt", 6)
+    train_data, _, test_data, _ = load_features_for_stgcn("features.txt", 6)
