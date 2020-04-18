@@ -62,8 +62,7 @@ class Graph():
         elif strategy == 'distance':
             A = np.zeros((len(valid_hop), self.num_node, self.num_node))
             for i, hop in enumerate(valid_hop):
-                A[i][self.hop_dis == hop] = normalize_adjacency[self.hop_dis ==
-                                                                hop]
+                A[i][self.hop_dis == hop] = normalize_adjacency[self.hop_dis == hop]
             self.A = A
         elif strategy == 'spatial':
             A = []
@@ -74,12 +73,9 @@ class Graph():
                 for i in range(self.num_node):
                     for j in range(self.num_node):
                         if self.hop_dis[j, i] == hop:
-                            if self.hop_dis[j, self.center] == self.hop_dis[
-                                i, self.center]:
+                            if self.hop_dis[j, self.center] == self.hop_dis[i, self.center]:
                                 a_root[j, i] = normalize_adjacency[j, i]
-                            elif self.hop_dis[j, self.
-                                    center] > self.hop_dis[i, self.
-                                    center]:
+                            elif self.hop_dis[j, self.center] > self.hop_dis[i, self.center]:
                                 a_close[j, i] = normalize_adjacency[j, i]
                             else:
                                 a_further[j, i] = normalize_adjacency[j, i]

@@ -18,14 +18,14 @@ labels = torch.tensor(l[:, 2] - 1, dtype=torch.long)
 tl = torch.tensor(tl[:, 2] - 1, dtype=torch.long)
 
 # load graph
-graph_args = dict()
+graph_args = {"strategy": "spatial"}
 graph = Graph(**graph_args)
 
 model = Model(in_channel, num_classes, graph, edge_importance_weighting=False)
-optimizer = optim.SGD(model.parameters(), lr=0.08, momentum=0.9)
+optimizer = optim.SGD(model.parameters(), lr=0.09, momentum=0.9)
 
 model.train()
-for i in range(40):
+for i in range(60):
     out = F.log_softmax(model(x), dim=1)
     loss = F.nll_loss(out, labels)
     acc = accuracy(out, labels)
