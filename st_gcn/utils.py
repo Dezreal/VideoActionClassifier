@@ -9,9 +9,10 @@ def accuracy(output, labels, verbose=False):
     right[x == y] = 1
     if verbose:
         for x, y in zip(x, y):
-            print(str(x) + " < " + str(y))
             if x != y:
-                print(get_action_name(x.item()) + " <- " + get_action_name(y.item()))
+                print(str(x) + " <- " + str(y) + get_action_name(x.item()) + " <- " + get_action_name(y.item()))
+            else:
+                print(str(x) + " <- " + str(y))
     return float(right.sum().item()) / right.shape[0]
 
 

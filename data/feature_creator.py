@@ -134,21 +134,11 @@ def append_feature_to_file(features, filepath, video_name):
 
 
 if __name__ == "__main__":
-    # files = os.listdir("/datasets/Florence_3d_actions/")
-    # for video in files:
-    #     if video.endswith(".avi"):
-    #         get_people_num("/datasets/Florence_3d_actions/" + video)
-    #
-    # with open("a.txt", 'r') as r:
-    #     for line in r:
-    #         line = line.replace("\n", "")
-    #         play_video(line)
+
     files = os.listdir("/datasets/Florence_3d_actions/")
+
     for video in files:
         if video.endswith(".avi"):
             print video
             features = get_features_from_video_main_one("/datasets/Florence_3d_actions/" + video)
             append_feature_to_file(features, "features.txt", video)
-
-    # get_features_from_video("/datasets/Florence_3d_actions/GestureRecording_Id1actor1idAction1category1.avi")
-    # get_features_from_video("/datasets/Florence_3d_actions/GestureRecording_Id1actor2idAction1category1.avi")
