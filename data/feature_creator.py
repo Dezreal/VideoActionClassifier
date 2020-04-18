@@ -93,21 +93,6 @@ def get_features_from_video_main_one(video_path, n_frame=0):
     return result
 
 
-def play_video(path):
-    cap = cv2.VideoCapture(path)
-    num_frame = cap.get(7)
-    print num_frame
-    i = 0
-    while i < num_frame:
-        boo, frame = cap.read()
-        width = frame.shape[1]
-        frame[:, 0:width / 5, :] = 0
-        frame[:, -width / 5:, :] = 0
-        # cv2.imshow("video", frame)
-        # cv2.waitKey(100)
-        i = i + 1
-
-
 def get_people_num(video_path):
     op_wrapper = OpSingleInstance().op_wrapper
     cap = cv2.VideoCapture(video_path)
