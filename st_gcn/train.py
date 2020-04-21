@@ -28,37 +28,38 @@ optimizer = optim.SGD(model.parameters(), lr=0.09, momentum=0.9)
 def train(epoch=100):
     model.train()
     for i in range(epoch):
-        # for training
         out = F.log_softmax(model(x), dim=1)
-        # for validation
-        v_out = F.log_softmax(model(tx), dim=1)
         loss = F.nll_loss(out, labels)
         acc = accuracy(out, labels)
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
 
-        valid = accuracy(v_out, tl, verbose=False)
-        print("epoch: %d\tloss: %.4f\tacc: %.3f\tval: %.4f" % (i + 1, loss.item(), acc, valid))
+        print("epoch: %d\tloss: %.4f\tacc: %.3f" % (i + 1, loss.item(), acc))
 
 
-def test():
+def test(verbose=False):
     n = tx.shape[0]
     r = 0
     for i in range(n):
         data = tx[i: i+1]
+        truth = tl[i]
         pred = F.log_softmax(model(data), dim=1).argmax()
-        if pred.item() == tl[i].item():
+        if pred.item() == truth.item():
             r = r + 1
+            if verbose:
+                print(str(pred) + " <- " + str(truth))
+        else:
+            if verbose:
+                print(str(pred) + " <- " + str(truth) +
+                      get_action_name(pred.item()) + " <- " + get_action_name(truth.item()))
     print("%.3f%% (%d/%d)" % (float(r) * 100 / n, r, n))
 
 
-train(100)
+if __name__ == "__main__":
 
-model.eval()
-test()
-
-# print("testing")
-#
-# p = F.log_softmax(model(tx), dim=1)
-# print(accuracy(p, tl, verbose=True))
+    train(epoch=100)
+    # torch.save(model, "model.pt")
+    # model = torch.load("model.pt")
+    model.eval()
+    test(verbose=True)

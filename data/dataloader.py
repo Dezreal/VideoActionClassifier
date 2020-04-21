@@ -90,17 +90,5 @@ def load_features_for_stgcn(datasets, frames_per_video):
     return train_points.contiguous(), train_labels.copy(), test_points.contiguous(), test_labels.copy()
 
 
-# f = "../FLIC/examples.mat"
-# data = scio.loadmat(f)
-#
-# f = "/home/nya-chu/下载/features_cropped/depth_cropped_a02_s01_e01.mat"
-# mat = h5py.File(f,mode='r')
-# print(mat.keys())
-# print(mat.values())
-# print(mat['cropped_depth'].shape)
-# mat_t = np.transpose(mat['cropped_depth'])
-# print(np.array(mat['cropped_depth'][0][0]))
-
-# data = np.loadtxt("/datasets/Florence_3d_actions/Florence_dataset_Features.txt")
 if __name__ == "__main__":
     train_data, _, test_data, _ = load_features_for_stgcn("features.txt", 6)

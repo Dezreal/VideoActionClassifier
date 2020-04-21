@@ -2,7 +2,6 @@
 import torch
 
 
-# @DeprecationWarning
 def accuracy(output, labels, verbose=False):
     x = output.argmax(dim=1)
     y = labels

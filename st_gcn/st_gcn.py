@@ -4,6 +4,16 @@ from gcn import ConvTemporalGraphical
 from tcn import TCN
 
 
+# for residual
+def zero(x):
+    return 0
+
+
+# for residual
+def x1(x):
+    return x
+
+
 class ST_GCN(nn.Module):
     r"""Applies a spatial temporal graph convolution over an input graph sequence.
 
@@ -48,10 +58,10 @@ class ST_GCN(nn.Module):
         self.tcn = TCN(out_channels, kernel_size, stride, padding, dropout)
 
         if not residual:
-            self.residual = lambda x: 0
+            self.residual = zero
 
         elif (in_channels == out_channels) and (stride == 1):
-            self.residual = lambda x: x
+            self.residual = x1
 
         else:
             self.residual = nn.Sequential(
