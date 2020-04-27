@@ -58,8 +58,9 @@ def test(verbose=False):
 
 if __name__ == "__main__":
 
-    train(epoch=100)
+    # train(epoch=100)
     # torch.save(model, "model.pt")
-    # model = torch.load("model.pt")
+    model = torch.load("model.pt")
+
     model.eval()
     test(verbose=True)

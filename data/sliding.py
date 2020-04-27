@@ -35,7 +35,9 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0)):
     cap = cv2.VideoCapture(video_path)
     # for printing msg
     total_frame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    test = [n for n in range(0 - padding[0], total_frame + padding[1])]
+    test = ["+" for _ in range(padding[0])]
+    test.extend([str(n) for n in range(0, total_frame)])
+    test.extend(["+" for _ in range(padding[1])])
 
     for padding_l in range(padding[0]):
         frames.append(np.zeros(shape=(25, 3)))
@@ -66,7 +68,7 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0)):
             frames.append(get_keypoints(frame))
 
 
-if __name__ == "__main__":
-    path = "/datasets/Florence_3d_actions/GestureRecording_Id1actor1idAction1category1.avi"
-    for i in sliding(path, 4, stride=2, dilation=3, padding=(3, 3)):
-        print(str(i.__len__()) + str(i[0].shape))
+# if __name__ == "__main__":
+#     path = "/datasets/Florence_3d_actions/GestureRecording_Id1actor1idAction1category1.avi"
+#     for i in sliding(path, 8, stride=1, dilation=1, padding=(3, 3)):
+#         print(str(i.__len__()) + str(i[0].shape))
