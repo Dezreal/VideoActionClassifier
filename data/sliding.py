@@ -6,6 +6,11 @@ from data.feature_creator import OpSingleInstance, cal_rectangle_from_points, ca
 
 
 def get_keypoints(image2process):
+    """
+    get pose key points and output of the image(frame)
+    :param image2process: one frame data
+    :return: (datum.poseKeypoints, datum.cvOutputData)
+    """
     op_wrapper = OpSingleInstance().op_wrapper
     datum = op.Datum()
     datum.cvInputData = image2process
@@ -15,19 +20,20 @@ def get_keypoints(image2process):
         n_people = datum.poseKeypoints.shape[0]
 
     if n_people == 0:
-        return [np.zeros(shape=(25, 3)), datum.cvOutputData]
+        return np.zeros(shape=(25, 3)), datum.cvOutputData
     elif n_people == 1:
         keypoints = datum.poseKeypoints[0]
-        return [keypoints, datum.cvOutputData]
+        return keypoints, datum.cvOutputData
     else:
         recs = cal_rectangle_from_points(datum.poseKeypoints)
         areas = cal_area_of_recs(recs)
         main = areas.index(max(areas))
         keypoints = datum.poseKeypoints[main]
-        return [keypoints, datum.cvOutputData]
+        return keypoints, datum.cvOutputData
 
 
 def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0)):
+    wait_key = 10
 
     frames = []
     start = 0
@@ -44,8 +50,10 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0)):
     n_first = (width - 1) * dilation + 1
     for _ in range(n_first - padding[0]):
         boo, frame = cap.read()
-        out = get_keypoints(frame)
-        frames.append(out[0])
+        key, output = get_keypoints(frame)
+        frames.append(key)
+        cv2.imshow(str(video_path), output)
+        cv2.waitKey(wait_key)
 
     n = 0
     padding_r = padding[1]
@@ -66,10 +74,10 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0)):
                 frames.append(np.zeros(shape=(25, 3)))
                 padding_r = padding_r - 1
         else:
-            out = get_keypoints(frame)
-            cv2.imshow(str(video_path), out[1])
-            cv2.waitKey(25)
-            frames.append(out[0])
+            key, output = get_keypoints(frame)
+            cv2.imshow(str(video_path), output)
+            cv2.waitKey(wait_key)
+            frames.append(key)
 
 
 # if __name__ == "__main__":
