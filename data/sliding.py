@@ -15,16 +15,16 @@ def get_keypoints(image2process):
         n_people = datum.poseKeypoints.shape[0]
 
     if n_people == 0:
-        return np.zeros(shape=(25, 3))
+        return [np.zeros(shape=(25, 3)), datum.cvOutputData]
     elif n_people == 1:
         keypoints = datum.poseKeypoints[0]
-        return keypoints
+        return [keypoints, datum.cvOutputData]
     else:
         recs = cal_rectangle_from_points(datum.poseKeypoints)
         areas = cal_area_of_recs(recs)
         main = areas.index(max(areas))
         keypoints = datum.poseKeypoints[main]
-        return keypoints
+        return [keypoints, datum.cvOutputData]
 
 
 def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0)):
@@ -44,7 +44,8 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0)):
     n_first = (width - 1) * dilation + 1
     for _ in range(n_first - padding[0]):
         boo, frame = cap.read()
-        frames.append(get_keypoints(frame))
+        out = get_keypoints(frame)
+        frames.append(out[0])
 
     n = 0
     padding_r = padding[1]
@@ -65,7 +66,10 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0)):
                 frames.append(np.zeros(shape=(25, 3)))
                 padding_r = padding_r - 1
         else:
-            frames.append(get_keypoints(frame))
+            out = get_keypoints(frame)
+            cv2.imshow(str(video_path), out[1])
+            cv2.waitKey(25)
+            frames.append(out[0])
 
 
 # if __name__ == "__main__":
