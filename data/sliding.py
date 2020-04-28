@@ -32,7 +32,7 @@ def get_keypoints(image2process):
         return keypoints, datum.cvOutputData
 
 
-def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0)):
+def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0), verbose=True):
     wait_key = 10
 
     frames = []
@@ -40,10 +40,14 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0)):
     end = width * dilation
     cap = cv2.VideoCapture(video_path)
     # for printing msg
-    total_frame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    test = ["+" for _ in range(padding[0])]
-    test.extend([str(n) for n in range(0, total_frame)])
-    test.extend(["+" for _ in range(padding[1])])
+    frame_idx = None
+    if verbose:
+        total_frame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        if video_path == 0:
+            total_frame = 1 * 10 ** 4
+        frame_idx = ["+" for _ in range(padding[0])]
+        frame_idx.extend([str(n) for n in range(0, total_frame)])
+        frame_idx.extend(["+" for _ in range(padding[1])])
 
     for padding_l in range(padding[0]):
         frames.append(np.zeros(shape=(25, 3)))
@@ -60,7 +64,8 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0)):
     while True:
         if n % stride == 0:
             index = slice(start, end, dilation)
-            print(test[index])
+            if verbose:
+                print(frame_idx[index])
             yield frames[index]
             start = start + stride
             end = end + stride
@@ -78,7 +83,6 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0)):
             cv2.imshow(str(video_path), output)
             cv2.waitKey(wait_key)
             frames.append(key)
-
 
 # if __name__ == "__main__":
 #     path = "/datasets/Florence_3d_actions/GestureRecording_Id1actor1idAction1category1.avi"
