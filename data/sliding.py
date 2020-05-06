@@ -32,7 +32,7 @@ def get_keypoints(image2process):
         return keypoints, datum.cvOutputData
 
 
-def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0), verbose=True):
+def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0), verbose=True, imshow=True):
     wait_key = 10
 
     frames = []
@@ -56,8 +56,9 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0), verbose=Tru
         boo, frame = cap.read()
         key, output = get_keypoints(frame)
         frames.append(key)
-        cv2.imshow(str(video_path), output)
-        cv2.waitKey(wait_key)
+        if imshow:
+            cv2.imshow(str(video_path), output)
+            cv2.waitKey(wait_key)
 
     n = 0
     padding_r = padding[1]
@@ -80,8 +81,9 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0), verbose=Tru
                 padding_r = padding_r - 1
         else:
             key, output = get_keypoints(frame)
-            cv2.imshow(str(video_path), output)
-            cv2.waitKey(wait_key)
+            if imshow:
+                cv2.imshow(str(video_path), output)
+                cv2.waitKey(wait_key)
             frames.append(key)
 
 # if __name__ == "__main__":
