@@ -1,10 +1,9 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch.autograd import Variable
 
 from st_gcn import ST_GCN
-from graph import Graph
+
 
 class Model(nn.Module):
     r"""Spatial temporal graph convolutional networks.
@@ -57,7 +56,7 @@ class Model(nn.Module):
         if edge_importance_weighting:
             self.edge_importance = nn.ParameterList([
                 nn.Parameter(torch.ones(self.A.size()))
-                for i in self.st_gcn_networks
+                for _ in self.st_gcn_networks
             ])
         else:
             self.edge_importance = [1] * len(self.st_gcn_networks)
@@ -76,7 +75,7 @@ class Model(nn.Module):
         x = x.permute(0, 1, 3, 4, 2).contiguous()
         x = x.view(N * M, C, T, V)
 
-        # forwad
+        # forward
         for gcn, importance in zip(self.st_gcn_networks, self.edge_importance):
             x, _ = gcn(x, self.A * importance)
 
@@ -101,7 +100,7 @@ class Model(nn.Module):
         x = x.permute(0, 1, 3, 4, 2).contiguous()
         x = x.view(N * M, C, T, V)
 
-        # forwad
+        # forward
         for gcn, importance in zip(self.st_gcn_networks, self.edge_importance):
             x, _ = gcn(x, self.A * importance)
 
