@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div><h3>{{content}}</h3></div>
+<iframe src={{url_for('info')}}></iframe>
+<form action="{{url_for('stop')}}" method="post">
+    <button type="button" id="stop">stop</button>
+</form>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+    $(function(){
+        $('#stop').click(function() {
+            $.ajax({
+                type: 'post',
+                url: '{{url_for('stop')}}'
+            })
+        });
+    });
+</script>
+</body>
+</html>
