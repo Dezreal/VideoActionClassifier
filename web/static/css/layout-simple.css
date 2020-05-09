@@ -48,6 +48,15 @@
 	font-size: 1.15em;
 }
 
+/* Intro content top */
+.intro__content__top {
+	position: absolute;
+	top: 0;
+	padding: 1.8em;
+	width: 100%;
+	font-size: 1.15em;
+}
+
 .intro__title {
 	margin: 0 0 20px;
 	font-weight: 900;

@@ -7,6 +7,8 @@
     {% endif %}
 </head>
 <body>
-<h3>{{content}}</h3>
+{% for line in info %}
+{{line}} <br/>
+{% endfor %}
 </body>
 </html>
