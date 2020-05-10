@@ -140,13 +140,13 @@
 					}
 
 				}, {
-					widgetTitle : "热图1",
+					widgetTitle : "实时估计1",
 					widgetId : "tweet1",
-					widgetContent : $("#myTweets")
+					widgetContent : $("#tweet1")
 				}, {
-					widgetTitle : "热图2",
+					widgetTitle : "实时估计2",
 					widgetId : "tweet2",
-					widgetContent : $("#myTweets")
+					widgetContent : $("#tweet2")
 				}];
 
 				//basic initialization example
@@ -289,6 +289,8 @@
 				update_data_json();
 				$("#filename").html(data_json["filename"]);
         		$(".sDashboardWidgetHeader div.sDashboard-icon.sDashboard-refresh-icon").trigger("click");
+        		$("#img1").attr("src", inferenceData.constructImgData1());
+        		$("#img2").attr("src", inferenceData.constructImgData2())
         		var alive = data_json["alive"];
 				if (!alive) {
 					window.clearInterval(si);
@@ -302,7 +304,7 @@
 	</head>
 
 	<body>
-		<div style="padding-top: 5px; width:80%; margin-left:auto; margin-right:auto">
+		<div style="padding-top: 5px; width:70%; margin-left:auto; margin-right:auto">
 			<header><a href="/">首页</a></header>
 		<label id="filename"></label>&nbsp;&nbsp;<label id="status_label">推断中...</label>
 <!--		<button class="btn" id="btnAddWidget">-->
@@ -327,11 +329,11 @@
 		</div>
 		<hr/>
 		
-		<ul id="myDashboard" style="width: 80%; margin-left: auto; margin-right:auto">
-
+		<ul id="myDashboard" style="width: 70%; margin-left: auto; margin-right:auto">
 		</ul>
 
-		<div id="myTweets"> <h1>I was already on this page, but re-rendered as a widget</h1></div>
+		<div id="tweet1"><img id="img1" src="" alt="" style="width:auto; height:auto; max-height:100%; max-width:100%"></div>
+		<div id="tweet2"><img id="img2" src="" alt="" style="width:auto; height:auto; max-height:100%; max-width:100%"></div>
 		<div class="related" style="position: absolute; bottom:0; width:100%">
 			<h3>Video Action Classifier</h3>
 		</div>

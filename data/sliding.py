@@ -39,6 +39,10 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0), verbose=Tru
     start = 0
     end = width * dilation
     cap = cv2.VideoCapture(video_path)
+    # for image show
+    cvOutputs = []
+    w_frame = int(cap.get(3))
+    h_frame = int(cap.get(4))
     # for printing msg
     frame_idx = None
     if verbose:
@@ -51,11 +55,14 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0), verbose=Tru
 
     for padding_l in range(padding[0]):
         frames.append(np.zeros(shape=(25, 3)))
+        cvOutputs.append(np.zeros(shape=(w_frame, h_frame, 3)))
+
     n_first = (width - 1) * dilation + 1
     for _ in range(n_first - padding[0]):
         boo, frame = cap.read()
         key, output = get_keypoints(frame)
         frames.append(key)
+        cvOutputs.append(output)
         if imshow:
             cv2.imshow(str(video_path), output)
             cv2.waitKey(wait_key)
@@ -67,7 +74,7 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0), verbose=Tru
             index = slice(start, end, dilation)
             if verbose:
                 print(frame_idx[index])
-            yield frames[index]
+            yield frames[index], cvOutputs[index]
             start = start + stride
             end = end + stride
         n = n + 1
@@ -78,6 +85,7 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0), verbose=Tru
                 break
             else:
                 frames.append(np.zeros(shape=(25, 3)))
+                cvOutputs.append(np.zeros(shape=(w_frame, h_frame, 3)))
                 padding_r = padding_r - 1
         else:
             key, output = get_keypoints(frame)
@@ -85,6 +93,7 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0), verbose=Tru
                 cv2.imshow(str(video_path), output)
                 cv2.waitKey(wait_key)
             frames.append(key)
+            cvOutputs.append(output)
 
 # if __name__ == "__main__":
 #     path = "/datasets/Florence_3d_actions/GestureRecording_Id1actor1idAction1category1.avi"

@@ -26,6 +26,7 @@ class EvalThread(threading.Thread):
         self.info = []
         self.info_detail = []
         self._stop = False
+        self.cvOutput = []
 
     def set_path(self, video_path, video_name):
         self.video_path = video_path
@@ -41,9 +42,10 @@ class EvalThread(threading.Thread):
         return self.video_name
 
     def run(self):
-        for i in sliding(self.video_path + self.video_name,
+        for i, o in sliding(self.video_path + self.video_name,
                          8, stride=3, dilation=1, padding=(0, 0), imshow=False, verbose=False):
             time.sleep(0.1)
+            self.cvOutput = [o[1], o[5]]
             if self._stop:
                 break
             # print(str(i.__len__()) + str(i[0].shape))
@@ -113,3 +115,6 @@ class EvalThread(threading.Thread):
                 output[i] = 1
         sort = sorted(output.items(), key=lambda x: x[1])
         return sort[-1][0]
+
+    def get_cv_output(self):
+        return self.cvOutput

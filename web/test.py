@@ -1,7 +1,9 @@
 # coding=utf-8
+import base64
 import os
 import sys
 
+import cv2
 from flask import Flask, render_template, request, session, redirect, jsonify
 from werkzeug.utils import secure_filename
 
@@ -76,13 +78,17 @@ def info():
     rst = thread_pool.get_thread().get_info()
     alive = thread_pool.get_thread().is_alive()
     detail = thread_pool.get_thread().get_info_detail()
-
+    cv = thread_pool.get_thread().get_cv_output()
+    code = False
+    if len(cv) == 2:
+        code = [cv2_base64(cv[0]), cv2_base64(cv[1])]
     t = {
         'alive': alive,
         'result': rst,
         'filename': thread_pool.get_thread().get_video_name(),
         'detail': detail,
-        'summary': thread_pool.get_thread().analysis_result()
+        'summary': thread_pool.get_thread().analysis_result(),
+        'code': code
     }
     return jsonify(t)
 
@@ -98,6 +104,12 @@ def user():
     if len(session) == 0:
         return redirect('/login')
     return redirect('/widget/account.html')
+
+
+def cv2_base64(image):
+    base64_str = cv2.imencode('.jpg',image)[1].tostring()
+    base64_str = base64.b64encode(base64_str)
+    return base64_str
 
 
 if __name__ == '__main__':

@@ -241,3 +241,19 @@ inferenceData.tableWidgetData = {
 	"bPaginate": true,
 	"bAutoWidth": false
 };
+
+inferenceData.constructImgData1 = function() {
+    var code = data_json['code']
+    if (code == false) {
+        return ""
+    }
+    return "data:image/jpeg;base64," + code[0];
+};
+
+inferenceData.constructImgData2 = function() {
+    var code = data_json['code']
+    if (code == false) {
+        return ""
+    }
+    return "data:image/jpeg;base64," + code[1];
+};
