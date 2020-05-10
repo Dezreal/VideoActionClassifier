@@ -11,7 +11,7 @@ mysql = Mysql()
 
 @login_api.route('/login', methods=['GET', 'POST'])
 def login():
-    return render_template('login.html')
+    return redirect('/login/index.html')
 
 
 @login_api.route('/signin', methods=['POST'])
