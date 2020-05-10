@@ -89,10 +89,13 @@ class EvalThread(threading.Thread):
 
         sql = 'replace into user_last_file (username, filename, detail, date) values (%s, %s, %s, %s);'
         detail = ''
-        for i in self.info_detail:
-            for j in i:
-                detail = detail + ("%.3f" % j) + " "
-            detail = detail + ','
+        for i, once in enumerate(self.info_detail):
+            for j, item in enumerate(once):
+                detail = detail + ("%.3f" % item)
+                if j != once.__len__() - 1:
+                    detail = detail + ' '
+            if i != self.info_detail.__len__() - 1:
+                detail = detail + ','
         try:
             mysql.insertOne(sql, [username, filename, detail, date])
             mysql.end()

@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
-		<title>深度模型推断</title>
+		<title>统计信息</title>
 		<!-- load the dashboard css -->
 		<link href="sDashboard.css" rel="stylesheet">
 		<!-- load gitter css -->
@@ -36,34 +36,32 @@
 		<!-- example code -->
 		<script type="text/javascript">
 			$(function() {
-
-
-				var randomString = "开始时间：" + new Date();
-				
 				//**********************************************//
 				//dashboard json data
 				//this is the data format that the dashboard framework expects
 				//**********************************************//
 
-				var dashboardJSON = [{
-					widgetTitle : "各窗口选定结果最大置信度",
-					widgetId : "id009",
-					widgetType : "chart",
-					enableRefresh: true,
-					refreshCallBack : function(widgetId){
-						var refreshedData = {
-							data : accountData.constructBubbleChartData(),
-							options : accountData.bubbleChartOptions
-						};
-						return refreshedData;
-					},
-					widgetContent : {
-						data : accountData.bubbleChartData,
-						options : accountData.bubbleChartOptions
-					}
+				var dashboardJSON = [
+<!--				{-->
+<!--					widgetTitle : "各窗口选定结果最大置信度",-->
+<!--					widgetId : "id009",-->
+<!--					widgetType : "chart",-->
+<!--					enableRefresh: true,-->
+<!--					refreshCallBack : function(widgetId){-->
+<!--						var refreshedData = {-->
+<!--							data : accountData.constructBubbleChartData(),-->
+<!--							options : accountData.bubbleChartOptions-->
+<!--						};-->
+<!--						return refreshedData;-->
+<!--					},-->
+<!--					widgetContent : {-->
+<!--						data : accountData.bubbleChartData,-->
+<!--						options : accountData.bubbleChartOptions-->
+<!--					}-->
 
-				}, {
-					widgetTitle : "滑动窗口各窗口结果",
+<!--				}, -->
+				{
+					widgetTitle : "总历史记录",
 					widgetId : "id3",
 					widgetType : "table",
 					enableRefresh : true,
@@ -72,7 +70,7 @@
 							"aaData" : accountData.constructTableWidgetData(),
 
 							"aoColumns" : [{
-							"sTitle" : "窗口"
+							"sTitle" : "视频"
 							}, {
 							"sTitle" : "预测结果"
 							}]
@@ -80,13 +78,13 @@
 					},
 					widgetContent : accountData.tableWidgetData
 				}, {
-					widgetTitle : "计时窗口",
+					widgetTitle : "最后一次使用记录",
 					widgetId : "id2",
 					enableRefresh : true,
 					refreshCallBack : function(widgetId){
-						return randomString + "\n<br/> 当前时间：" + new Date();
+						return accountData.constructTextWidgetData();
 					},
-					widgetContent : randomString
+					widgetContent : accountData.constructTextWidgetData()
 				}, {
 					widgetTitle : "推断结果分布",
 					widgetId : "id001",
@@ -105,7 +103,7 @@
 					}
 
 				}, {
-					widgetTitle : "各窗口最大置信度",
+					widgetTitle : "系统使用频率",
 					widgetId : "id002",
 					widgetType : "chart",
 					enableRefresh: true,
@@ -122,7 +120,7 @@
 					}
 
 				}, {
-					widgetTitle : "各结果预测置信度",
+					widgetTitle : "最后一次各结果预测置信度",
 					widgetId : "id003",
 					widgetType : "chart",
 					getDataBySelection : true,
@@ -139,14 +137,6 @@
 						return refreshedData;
 					}
 
-				}, {
-					widgetTitle : "热图1",
-					widgetId : "tweet1",
-					widgetContent : $("#myTweets")
-				}, {
-					widgetTitle : "热图2",
-					widgetId : "tweet2",
-					widgetContent : $("#myTweets")
 				}];
 
 				//basic initialization example
@@ -326,7 +316,6 @@
 
 		</ul>
 
-		<div id="myTweets"> <h1>I was already on this page, but re-rendered as a widget</h1></div>
 		<div class="related" style="position: absolute; bottom:0; width:100%">
 			<h3>Video Action Classifier</h3>
 		</div>

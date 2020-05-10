@@ -207,7 +207,12 @@
 	  	data: {username: name, pwd: pass},
 	  	success: function(result) {
 			console.log(result);
-			$(location).attr('href', '/');
+			if (result == '102')
+				alert("密码错误");
+			else if(result == '103') {
+				alert("用户不存在");
+			} else
+				$(location).attr('href', '/');
 	  	},
 	  	error: function(e) {}
 	  });

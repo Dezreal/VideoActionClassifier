@@ -12,17 +12,6 @@ mysql = Mysql()
 @login_api.route('/login', methods=['GET', 'POST'])
 def login():
     return render_template('login.html')
-   #  if request.method == 'POST':
-   #      session['username'] = request.form['username']
-   #      return redirect(url_for('login_api.users'))
-   #  return '''
-   #
-   # <form action = "" method = "post">
-   #    <p><input type = text name = username></p>
-   #    <p><input type = submit value = Login></p>
-   # </form>
-   #
-   # '''
 
 
 @login_api.route('/signin', methods=['POST'])
@@ -47,10 +36,10 @@ def sign_up():
     email = request.form['email']
     date = getLastDate()
     try:
-        count = mysql.insertOne('insert into user_login (username,pwd,email,date) values (%s,%s,%s,%s)', [name, pwd, email, date])
+        mysql.insertOne('insert into user_login (username,pwd,email,date) values (%s,%s,%s,%s)', [name, pwd, email, date])
         mysql.end()
         return "1"
-    except Exception as e:
+    except Exception:
         return "2"
 
 
@@ -71,9 +60,29 @@ def sign_out():
 def get_account_data():
     if 'username' not in session:
         return redirect('/login')
+    sql = 'select filename as f, result as t from user_files where username = %s;'
+    username = session['username']
+    files = mysql.getAll(sql, [username])
+    sql = 'select * from user_last_file where username = %s;'
+    last = mysql.getOne(sql, [username])
+    sql = 'select count(*) as count, date from user_files where username = %s group by date;'
+    group_date = mysql.getAll(sql, [username])
+    _2020 = datetime.date(2020, 1, 1)
+    if group_date:
+        for i in range(len(group_date)):
+            group_date[i]["days"] = (group_date[i]["date"] - _2020).days
     t = {
-        'username': session['username'],
+        'username': username,
+        'files': files,
+        'last_file': last,
+        'group_date': group_date
     }
+    sql = "select result from user_files where username = %s and filename in ( " \
+          "select filename from user_last_file where username = %s);"
+
+    last_result = mysql.getOne(sql, [username, username])
+    if last_result:
+        t['last_file']['result'] = last_result["result"]
     return jsonify(t)
 
 
