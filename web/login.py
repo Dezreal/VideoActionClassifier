@@ -1,6 +1,6 @@
 import datetime
 import hashlib
-from flask import Blueprint, session, request, url_for, render_template, abort
+from flask import Blueprint, session, request, url_for, render_template, jsonify
 from werkzeug.utils import redirect
 from db.mysqlpool import Mysql
 
@@ -51,7 +51,7 @@ def sign_up():
         mysql.end()
         return "1"
     except Exception as e:
-        abort(400)
+        return "2"
 
 
 @login_api.route('/c_user')
@@ -67,14 +67,14 @@ def sign_out():
     return redirect('/')
 
 
-@login_api.route('/users')
-def users():
-    if 'username' in session:
-        username = session['username']
-        return 'Logged in as '+        username + '<br>' + "<b><a href = '/logout'>click here to log out</a></b>"
-
-
-    return "You are not logged in <br><a href = '/login'></b>" +            "click here to log in</b></a>"
+@login_api.route('/account')
+def get_account_data():
+    if 'username' not in session:
+        return redirect('/login')
+    t = {
+        'username': session['username'],
+    }
+    return jsonify(t)
 
 
 def md5(string):

@@ -241,6 +241,9 @@
 		 		url: '/signup',
 		 		data: {username: name, pwd: pass, email: email},
 		 		success : function(result) {
+		 			if (result == '2') {
+		 				alert('用户名重复');
+		 			}
                 	console.log(result);
                 	alert("注册成功！");
                 	change();
@@ -248,7 +251,7 @@
 		  			$("#password").val(pass);
             	},
             	error: function(e) {
-            		alert("用户名重复。");
+            		alert("服务器重复。");
             	}
 		 	});
 		  $("#user_name").val("");

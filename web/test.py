@@ -2,7 +2,7 @@
 import os
 import sys
 
-from flask import Flask, render_template, request, session, redirect
+from flask import Flask, render_template, request, session, redirect, jsonify
 from werkzeug.utils import secure_filename
 
 from web.db.mysqlpool import Mysql
@@ -47,7 +47,7 @@ def index():
 @app.route('/upload')
 def upload():
     if 'username' in session:
-        return render_template('upload.html')
+        return redirect('/upload/upload.html')
     else:
         return redirect('/login')
 
@@ -66,16 +66,25 @@ def upload_file():
         eval_thread.start()
         thread_pool.add(eval_thread)
 
-        return render_template("uploader.html", content=filename)
+        return redirect('/widget/analysis.html')
     else:
         return redirect('/login')
 
 
-@app.route('/info')
+@app.route('/analysis')
 def info():
-    info = thread_pool.get_thread().get_info()
+    rst = thread_pool.get_thread().get_info()
     alive = thread_pool.get_thread().is_alive()
-    return render_template("fresh.html", info=info, fresh=alive)
+    detail = thread_pool.get_thread().get_info_detail()
+
+    t = {
+        'alive': alive,
+        'result': rst,
+        'filename': thread_pool.get_thread().get_video_name(),
+        'detail': detail,
+        'summary': thread_pool.get_thread().analysis_result()
+    }
+    return jsonify(t)
 
 
 @app.route('/stop', methods=['post'])
@@ -88,7 +97,7 @@ def stop():
 def user():
     if len(session) == 0:
         return redirect('/login')
-    return redirect('/account/index.html')
+    return redirect('/widget/account.html')
 
 
 if __name__ == '__main__':
