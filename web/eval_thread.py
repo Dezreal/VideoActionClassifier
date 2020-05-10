@@ -42,7 +42,7 @@ class EvalThread(threading.Thread):
 
     def run(self):
         for i in sliding(self.video_path + self.video_name,
-                         8, stride=3, dilation=1, padding=(0, 0), imshow=False, verbose=True):
+                         8, stride=3, dilation=1, padding=(0, 0), imshow=False, verbose=False):
             time.sleep(0.1)
             if self._stop:
                 break
