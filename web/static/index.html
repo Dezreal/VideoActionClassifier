@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh" class="no-js">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>VAC智能识别</title>
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="stylesheet" type="text/css" href="css/normalize.css" />
+		<link rel="stylesheet" type="text/css" href="css/demo.css" />
+		<link rel="stylesheet" type="text/css" href="css/layout-simple.css" />
+
+		<script src="js/jquery-2.1.1.min.js" type="text/javascript"></script>
+
+	</head>
+	<body>
+		<div id="container" class="container">
+			<header class="intro">
+				<img class="intro__image" src="img/header04.png" alt="Iceland galcier"/>
+				<div class="intro__content__top">
+					<div><a href="/user" id="username">登录</a></div>
+				</div>
+				<div class="intro__content">
+					<div><h3 id="start"><a href="/upload">点击开始 Click to Start</a></h3></div>
+					<h1 class="intro__title">视频动作识别分类应用</h1>
+					<div class="intro__subtitle">
+						<div class="intro__description">
+							轻松完成视频内容识别与统计。
+<!--							<div class="demos">-->
+<!--								<a class="demos__item demos__item&#45;&#45;current" href="{{url_for('index')}}">Simple</a>-->
+<!--								<a class="demos__item" href="layout-multi.html">Multi</a>-->
+<!--							</div>-->
+						</div>
+						<button class="trigger">
+							<svg width="100%" height="100%" viewBox="0 0 60 60" preserveAspectRatio="none">
+								<g class="icon icon--grid">
+									<rect x="32.5" y="5.5" width="22" height="22"/>
+									<rect x="4.5" y="5.5" width="22" height="22"/>
+									<rect x="32.5" y="33.5" width="22" height="22"/>
+									<rect x="4.5" y="33.5" width="22" height="22"/>
+								</g>
+								<g class="icon icon--cross">
+									<line x1="4.5" y1="55.5" x2="54.953" y2="5.046"/>
+									<line x1="54.953" y1="55.5" x2="4.5" y2="5.047"/>
+								</g>
+							</svg>
+							<span>View content</span>
+						</button>
+					</div>
+				</div><!-- /intro__content -->
+			</header><!-- /intro -->
+			<section class="items-wrap">
+				<a href="#" class="item">
+					<img class="item__image" src="img/item01.jpg" alt="item01"/>
+					<h2 class="item__title">智慧</h2>
+				</a>
+				<a href="#" class="item">
+					<img class="item__image" src="img/item02.jpg" alt="item02"/>
+					<h2 class="item__title">准确</h2>
+				</a>
+				<a href="#" class="item">
+					<img class="item__image" src="img/item03.jpg" alt="item03"/>
+					<h2 class="item__title">深度</h2>
+				</a>
+				<a href="#" class="item">
+					<img class="item__image" src="img/item04.jpg" alt="item04"/>
+					<h2 class="item__title">思维</h2>
+				</a>
+				<a href="#" class="item">
+					<img class="item__image" src="img/item05.jpg" alt="item05"/>
+					<h2 class="item__title">便利</h2>
+				</a>
+				<a href="#" class="item">
+					<img class="item__image" src="img/item06.jpg" alt="item06"/>
+					<h2 class="item__title">实时</h2>
+				</a>
+				<a href="#" class="item">
+					<img class="item__image" src="img/item07.jpg" alt="item07"/>
+					<h2 class="item__title">快捷</h2>
+				</a>
+				<a href="#" class="item">
+					<img class="item__image" src="img/item08.jpg" alt="item08"/>
+					<h2 class="item__title">轻量</h2>
+				</a>
+				<a href="#" class="item">
+					<img class="item__image" src="img/item09.jpg" alt="item09"/>
+					<h2 class="item__title">优雅</h2>
+				</a>
+				<a href="#" class="item">
+					<img class="item__image" src="img/item10.jpg" alt="item10"/>
+					<h2 class="item__title">美观</h2>
+				</a>
+				<a href="#" class="item">
+					<img class="item__image" src="img/item11.jpg" alt="item11"/>
+					<h2 class="item__title">整洁</h2>
+				</a>
+				<a href="#" class="item">
+					<img class="item__image" src="img/item12.jpg" alt="item12"/>
+					<h2 class="item__title">惬意</h2>
+				</a>
+			</section>
+		</div><!-- /container -->
+		<script src="js/classie.js"></script>
+		<script>
+			(function() {
+				$.ajax({
+					url: '/c_user',
+					type: 'get',
+					success: function(result) {
+						if (result)
+							$('#username').html("Hello! " + result);
+					},
+				});
+
+				var container = document.getElementById( 'container' ),
+					trigger = container.querySelector( 'button.trigger' );
+
+				function toggleContent() {
+					if( classie.has( container, 'container--open' ) ) {
+						classie.remove( container, 'container--open' );
+						classie.remove( trigger, 'trigger--active' );
+						window.addEventListener( 'scroll', noscroll );
+					}
+					else {
+						classie.add( container, 'container--open' );
+						classie.add( trigger, 'trigger--active' );
+						window.removeEventListener( 'scroll', noscroll );
+					}
+				}
+
+				function noscroll() {
+					window.scrollTo( 0, 0 );
+				}
+
+				// reset scrolling position
+				document.body.scrollTop = document.documentElement.scrollTop = 0;
+
+				// disable scrolling
+				window.addEventListener( 'scroll', noscroll );
+
+				trigger.addEventListener( 'click', toggleContent );
+
+				// For Demo purposes only (prevent jump on click)
+				[].slice.call( document.querySelectorAll('.items-wrap a') ).forEach( function(el) { el.onclick = function() { return false; } } );
+			})();
+		</script>
+	</body>
+</html>
