@@ -47,7 +47,7 @@ def sign_up():
 def get_current_user():
     if 'username' in session:
         return session['username']
-    return False
+    return ''
 
 
 @login_api.route('/signout')
