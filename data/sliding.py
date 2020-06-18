@@ -45,13 +45,13 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0), verbose=Tru
     h_frame = int(cap.get(4))
     # for printing msg
     frame_idx = None
-    if verbose:
-        total_frame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-        if video_path == 0:
-            total_frame = 1 * 10 ** 4
-        frame_idx = ["+" for _ in range(padding[0])]
-        frame_idx.extend([str(n) for n in range(0, total_frame)])
-        frame_idx.extend(["+" for _ in range(padding[1])])
+    # if verbose:
+    total_frame = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+    if video_path == 0:
+        total_frame = 1 * 10 ** 4
+    frame_idx = ["+" for _ in range(padding[0])]
+    frame_idx.extend([str(n) for n in range(0, total_frame)])
+    frame_idx.extend(["+" for _ in range(padding[1])])
 
     for padding_l in range(padding[0]):
         frames.append(np.zeros(shape=(25, 3)))
@@ -74,7 +74,7 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0), verbose=Tru
             index = slice(start, end, dilation)
             if verbose:
                 print(frame_idx[index])
-            yield frames[index], cvOutputs[index]
+            yield frames[index], cvOutputs[index], frame_idx[index]
             start = start + stride
             end = end + stride
         n = n + 1
@@ -94,8 +94,3 @@ def sliding(video_path, width, stride=1, dilation=1, padding=(0, 0), verbose=Tru
                 cv2.waitKey(wait_key)
             frames.append(key)
             cvOutputs.append(output)
-
-# if __name__ == "__main__":
-#     path = "/datasets/Florence_3d_actions/GestureRecording_Id1actor1idAction1category1.avi"
-#     for i in sliding(path, 8, stride=1, dilation=1, padding=(3, 3)):
-#         print(str(i.__len__()) + str(i[0].shape))
