@@ -1,0 +1,341 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<title>深度模型推断</title>
+		<!-- load the dashboard css -->
+		<link href="sDashboard.css" rel="stylesheet">
+		<!-- load gitter css -->
+		<link href="css/gitter/css/jquery.gritter.css" rel="stylesheet"/>
+		<link href="css/jquery.dataTables.css" rel="stylesheet">
+		<link href="css/default.css" rel="stylesheet">
+		<!-- load jquery library -->
+		<script src="libs/jquery/jquery-1.8.2.js" type="text/javascript"> </script>
+		<!-- load jquery ui library -->
+		<script src="libs/jquery/jquery-ui.js" type="text/javascript"> </script>
+
+		
+		<!-- load touch punch library to enable dragging on touch based devices -->
+		<script src="libs/touchpunch/jquery.ui.touch-punch.js" type="text/javascript"> </script>
+		<!-- load gitter notification library -->
+		<script src="libs/gitter/jquery.gritter.js" type="text/javascript"> </script>
+
+		<!-- load datatables library -->
+		<script src="js/jquery.dataTables.js" type="text/javascript"> </script>
+
+		<!-- load flotr2 charting library -->
+		<!--[if IE]>
+		<script language="javascript" type="text/javascript" src="libs/flotr2/flotr2.ie.min.js"></script>
+		<![endif]-->
+		<script src="libs/flotr2/flotr2.js" type="text/javascript"> </script>
+ 
+		<!-- load dashboard library -->
+		<script src="js/jquery-sDashboard.js" type="text/javascript"> </script>
+
+		<!-- sample data external script file -->
+		<script src="js/inferenceData.js" type="text/javascript"> </script>
+		<!-- example code -->
+		<script type="text/javascript">
+			$(function() {
+
+
+				var randomString = "开始时间：" + new Date();
+				
+				//**********************************************//
+				//dashboard json data
+				//this is the data format that the dashboard framework expects
+				//**********************************************//
+
+				var dashboardJSON = [{
+					widgetTitle : "各窗口选定结果最大置信度",
+					widgetId : "id009",
+					widgetType : "chart",
+					enableRefresh: true,
+					refreshCallBack : function(widgetId){
+						var refreshedData = {
+							data : inferenceData.constructBubbleChartData(),
+							options : inferenceData.bubbleChartOptions
+						};
+						return refreshedData;
+					},
+					widgetContent : {
+						data : inferenceData.bubbleChartData,
+						options : inferenceData.bubbleChartOptions
+					}
+
+				}, {
+					widgetTitle : "滑动窗口各窗口结果",
+					widgetId : "id3",
+					widgetType : "table",
+					enableRefresh : true,
+					refreshCallBack : function(widgetData){
+						return {
+							"aaData" : inferenceData.constructTableWidgetData(),
+
+							"aoColumns" : [{
+							"sTitle" : "窗口"
+							}, {
+							"sTitle" : "预测结果"
+							}]
+						};
+					},
+					widgetContent : inferenceData.tableWidgetData
+				}, {
+					widgetTitle : "计时窗口",
+					widgetId : "id2",
+					enableRefresh : true,
+					refreshCallBack : function(widgetId){
+						return randomString + "\n<br/> 当前时间：" + new Date();
+					},
+					widgetContent : randomString
+				}, {
+					widgetTitle : "推断结果分布",
+					widgetId : "id001",
+					widgetType : "chart",
+					widgetContent : {
+						data : inferenceData.constructPieChartData(),
+						options : inferenceData.pieChartOptions
+					},
+					enableRefresh: true,
+					refreshCallBack : function(widgetId){
+						var refreshedData = {
+							data : inferenceData.constructPieChartData(),
+							options : inferenceData.pieChartOptions
+						};
+						return refreshedData;
+					}
+
+				}, {
+					widgetTitle : "各窗口最大置信度",
+					widgetId : "id002",
+					widgetType : "chart",
+					enableRefresh: true,
+					refreshCallBack : function(widgetId){
+						var refreshedData = {
+							data : inferenceData.constructBarChartData(),
+							options : inferenceData.barChartOptions
+						};
+						return refreshedData;
+					},
+					widgetContent : {
+						data : inferenceData.constructBarChartData(),
+						options : inferenceData.barChartOptions
+					}
+
+				}, {
+					widgetTitle : "各结果预测置信度",
+					widgetId : "id003",
+					widgetType : "chart",
+					getDataBySelection : true,
+					widgetContent : {
+						data : inferenceData.constructLineChartData(),
+						options : inferenceData.lineChartOptions
+					},
+					enableRefresh: true,
+					refreshCallBack : function(widgetId){
+						var refreshedData = {
+							data : inferenceData.constructLineChartData(),
+							options : inferenceData.lineChartOptions
+						};
+						return refreshedData;
+					}
+
+				}, {
+					widgetTitle : "实时估计1",
+					widgetId : "tweet1",
+					widgetContent : $("#tweet1")
+				}, {
+					widgetTitle : "实时估计2",
+					widgetId : "tweet2",
+					widgetContent : $("#tweet2")
+				}];
+
+				//basic initialization example
+				$("#myDashboard").sDashboard({
+					dashboardData : dashboardJSON
+				});
+
+				//table row clicked event example
+				$("#myDashboard").bind("sdashboardrowclicked", function(e, data) {
+					$.gritter.add({
+						position: 'bottom-left',
+						title : 'Table row clicked',
+						time : 1000,
+						text : 'A table row within a table widget has been clicked, please check the console for additional event data'
+					});
+
+					if (console) {
+						console.log("table row clicked, for widget: " + data.selectedWidgetId);
+					}
+				});
+
+				//plot selected event example
+				$("#myDashboard").bind("sdashboardplotselected", function(e, data) {
+					$.gritter.add({
+						position: 'bottom-left',
+						title : 'Plot selected',
+						time : 1000,
+						text : 'A plot has been selected within a chart widget, please check the console for additional event data'
+					});
+					if (console) {
+						console.log("chart range selected, for widget: " + data.selectedWidgetId);
+					}
+				});
+				//plot click event example
+				$("#myDashboard").bind("sdashboardplotclicked", function(e, data) {
+					$.gritter.add({
+						position: 'bottom-left',
+						title : 'Plot Clicked',
+						time : 1000,
+						text : 'A plot has been clicked within a chart widget, please check the console for additional event data'
+					});
+					if (console) {
+						console.log("chart clicked, for widget: " + data.selectedWidgetId);
+					}
+				});
+
+				//widget order changes event example
+				$("#myDashboard").bind("sdashboardorderchanged", function(e, data) {
+					$.gritter.add({
+						position: 'bottom-left',
+						title : 'Order Changed',
+						time : 4000,
+						text : 'The widgets order has been changed,check the console for the sorted widget definitions array'
+					});
+					if (console) {
+						console.log("Sorted Array");
+						console.log("+++++++++++++++++++++++++");
+						console.log(data.sortedDefinitions);
+						console.log("+++++++++++++++++++++++++");
+					}
+					
+				});
+<!--				//example for adding a text widget-->
+<!--				$("#btnAddWidget").click(function() {-->
+<!--					$("#myDashboard").sDashboard("addWidget", {-->
+<!--						widgetTitle : "Widget 7",-->
+<!--						widgetId : "id008",-->
+<!--						widgetContent : "Lorem ipsum dolor sit amet," + "consectetur adipiscing elit." + "Aenean lacinia mollis condimentum." + "Proin vitae ligula quis ipsum elementum tristique." + "Vestibulum ut sem erat."-->
+<!--					});-->
+<!--				});-->
+
+<!--				//example for adding a table widget-->
+<!--				$("#btnAddTableWidget").click(function() {-->
+<!--					$("#myDashboard").sDashboard("addWidget", {-->
+<!--						widgetTitle : "Table Widget 2",-->
+<!--						widgetId : "id007",-->
+<!--						widgetType : "table",-->
+<!--						widgetContent : inferenceData.tableWidgetData-->
+<!--					});-->
+
+<!--				});-->
+
+<!--				//example for  deleting a widget-->
+<!--				$("#btnDeleteWidget").click(function() {-->
+<!--					$("#myDashboard").sDashboard("removeWidget", "id007");-->
+<!--				});-->
+
+<!--				//example for adding a pie chart widget-->
+<!--				$("#btnAddPieChartWidget").click(function() {-->
+
+<!--					$("#myDashboard").sDashboard("addWidget", {-->
+<!--						widgetTitle : "Pie Chart 2",-->
+<!--						widgetId : "id006",-->
+<!--						widgetType : "chart",-->
+<!--						widgetContent : {-->
+<!--							data : inferenceData.pieChartData,-->
+<!--							options : inferenceData.pieChartOptions-->
+<!--						}-->
+<!--					});-->
+
+<!--				});-->
+
+<!--				//example for adding a bar chart widget-->
+<!--				$("#btnAddBarChartWidget").click(function() {-->
+
+<!--					$("#myDashboard").sDashboard("addWidget", {-->
+<!--						widgetTitle : "Bar Chart 2",-->
+<!--						widgetId : "id005",-->
+<!--						widgetType : "chart",-->
+<!--						enableRefresh: true,-->
+<!--						refreshCallBack : function(widgetId){-->
+<!--							var refreshedData = {-->
+<!--								data : inferenceData.constructBarChartData(),-->
+<!--								options : inferenceData.barChartOptions-->
+<!--							};-->
+<!--							return refreshedData;-->
+<!--						},-->
+<!--						widgetContent : {-->
+<!--							data : inferenceData.barChartData,-->
+<!--							options : inferenceData.barChartOptions-->
+<!--						}-->
+<!--					});-->
+<!--				});-->
+
+<!--				//example for adding an line chart widget-->
+<!--				$("#btnAddLineChartWidget").click(function() {-->
+<!--					$("#myDashboard").sDashboard("addWidget", {-->
+<!--						widgetTitle : "Line Chart 2",-->
+<!--						widgetId : "id004",-->
+<!--						widgetType : "chart",-->
+<!--						getDataBySelection : true,-->
+<!--						widgetContent : {-->
+<!--							data : inferenceData.lineChartData,-->
+<!--							options : inferenceData.lineChartOptions-->
+<!--						}-->
+
+<!--					});-->
+<!--				});-->
+			var si = setInterval(function () {
+				update_data_json();
+				$("#filename").html(data_json["filename"]);
+        		$(".sDashboardWidgetHeader div.sDashboard-icon.sDashboard-refresh-icon").trigger("click");
+        		$("#img1").attr("src", inferenceData.constructImgData1());
+        		$("#img2").attr("src", inferenceData.constructImgData2())
+        		var alive = data_json["alive"];
+				if (!alive) {
+					window.clearInterval(si);
+					$('#status_label').html("已完成。&nbsp&nbsp&nbsp&nbsp综合结果：" + data_json['summary']);
+				}
+   			}, 1000);
+
+			});
+
+		</script>
+	</head>
+
+	<body>
+		<div style="padding-top: 5px; width:70%; margin-left:auto; margin-right:auto">
+			<header><a href="/">首页</a></header>
+		<label id="filename"></label>&nbsp;&nbsp;<label id="status_label">推断中...</label>
+<!--		<button class="btn" id="btnAddWidget">-->
+<!--			1) Add Widget-->
+<!--		</button>-->
+<!--		<button class="btn" id="btnAddTableWidget">-->
+<!--			2) Add Table widget-->
+<!--		</button>-->
+<!--		<button class="btn" id="btnDeleteWidget">-->
+<!--			3) Delete Table Widget-->
+<!--		</button>-->
+<!--		<button class="btn" id="btnAddPieChartWidget">-->
+<!--			4) Add Pie Chart widget-->
+<!--		</button>-->
+<!--		<button class="btn" id="btnAddBarChartWidget">-->
+<!--			5) Add Bar Chart widget-->
+<!--		</button>-->
+<!--		<button class="btn" id="btnAddLineChartWidget">-->
+<!--			6) Add Line Chart widget-->
+<!--		</button>-->
+<!--		-->
+		</div>
+		<hr/>
+		
+		<ul id="myDashboard" style="width: 70%; margin-left: auto; margin-right:auto">
+		</ul>
+
+		<div id="tweet1"><img id="img1" src="" alt="" style="width:auto; height:auto; max-height:100%; max-width:100%"></div>
+		<div id="tweet2"><img id="img2" src="" alt="" style="width:auto; height:auto; max-height:100%; max-width:100%"></div>
+		<div class="related" style="position: absolute; bottom:0; width:100%">
+			<h3>Video Action Classifier</h3>
+		</div>
+	</body>
+</html>

@@ -59,8 +59,8 @@ def test(verbose=False):
 if __name__ == "__main__":
 
     # train(epoch=100)
-    # torch.save(model, "model.pt")
-    model = torch.load("model.pt")
+    # torch.save(model.state_dict(), "model_param.pt")
 
+    model.load_state_dict(torch.load("model_param.pt"))
     model.eval()
     test(verbose=True)

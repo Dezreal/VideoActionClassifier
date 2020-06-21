@@ -1,2 +1,5 @@
 /.idea
 /test.py
+/web/*.avi
+*.pyc
+/st_gcn/model.pt
