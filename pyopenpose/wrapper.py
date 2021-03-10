@@ -62,3 +62,7 @@ class op:
     @staticmethod
     def help():
         help(pyopenpose)
+
+    @staticmethod
+    def VectorDatum(datums):
+        return pyopenpose.VectorDatum(datums)

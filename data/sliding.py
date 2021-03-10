@@ -14,7 +14,7 @@ def get_keypoints(image2process):
     op_wrapper = OpSingleInstance().op_wrapper
     datum = op.Datum()
     datum.cvInputData = image2process
-    op_wrapper.emplaceAndPop([datum])
+    op_wrapper.emplaceAndPop(op.VectorDatum([datum]))
     n_people = 0
     if not datum.poseKeypoints.size == 1:
         n_people = datum.poseKeypoints.shape[0]
